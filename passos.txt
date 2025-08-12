@@ -1,0 +1,24 @@
+git config --global user.name GalloJunior
+git config --global user.email gallojunior@gmail.com
+
+Criando um projeto Web API com .net 9
+dotnet new webapi -o GAF.API --use-controllers
+
+cd GAF.API
+dotnet add package Swashbuckle.AspNetCore --version 9.0.3
+
+-- Instalação de pacotes
+dotnet add package Microsoft.EntityFrameworkCore --version 9.0.8
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.8
+dotnet add package Microsoft.EntityFrameworkCore.Tools --version 9.0.8
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 9.0.8
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 9.0.8
+dotnet add package System.IdentityModel.Tokens.Jwt --version 8.13.1
+dotnet add package Pomelo.EntityFrameworkCore.MySql --version 8.0.3
+
+dotnet remove package Pomelo.EntityFrameworkCore.MySql
+
+dotnet clean
+dotnet restore
+
+dotnet add package MySql.EntityFrameworkCore --version 9.0.6
