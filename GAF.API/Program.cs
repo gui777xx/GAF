@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 using GAF.API.Data;
 using GAF.API.Models;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,11 +62,65 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Adicionar autorização
+builder.Services.AddAuthorization();
+
+// Registro dos Serviços Customizados
+
+
+// registro dos repositorios
+
+
+// Registro dos serviços
+
+
+// Configuraçao do CORS
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("allowAll", policy =>
+    {
+    policy.AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+    });
+});
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "GAF API",
+        Version = "v1",
+        Description = "API para gerenciamento  de finanças pessoais"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Cabeçalho da Autorização JWT. Exemplo: \"Autorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -81,6 +137,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowALL");
+
+app.UseAuthorization();
 
 app.UseAuthorization();
 
